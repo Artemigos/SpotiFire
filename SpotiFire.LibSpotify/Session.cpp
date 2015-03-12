@@ -319,7 +319,11 @@ Task<Error> ^Session::Relogin() {
 	logger->Trace("Relogin");
 	SPLock lock;
 	_login = gcnew TaskCompletionSource<Error>();
-	sp_session_relogin(_ptr);
+	sp_error err = sp_session_relogin(_ptr);
+
+	if (err != SP_ERROR_OK)
+		logged_in(Error(err));
+
 	return _login->Task;
 }
 
